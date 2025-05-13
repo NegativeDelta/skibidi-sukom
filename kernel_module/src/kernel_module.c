@@ -7,7 +7,7 @@ MODULE_INFO(intree, "Y");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Wojciech Królak-Kurkus");
 MODULE_DESCRIPTION("Simple kernel module for SYKOM lecture");
-MODULE_VERSION("0.01");
+MODULE_VERSION("1");
 
 #define RAW_SPACE(addr) (*(volatile unsigned long *)(addr))
 
@@ -33,36 +33,14 @@ static int drkrwo; // RESULT
 
 static ssize_t dskrwo_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
-    size_t i;
-    char wynik = 0;
+    unsigned int wynik = 0;
 
-    if (count == 0 || count > 4)
-    {
+    if(kstrtouint(buf, 8, &wynik)){
         return -EINVAL;
     }
 
-    // walidacja zapisu ósemkowego i ilości bitów
-    for (i = 0; i < count; i++)
-    {
-        char c = buf[i];
-        char liczba;
-
-        // odrzucanie ewentualnego newlinea z końca pliku
-        if (i == count - 1 && c == '\n')
-            continue;
-
-        if (c < '0' || c > '7')
-        {
-            return -EINVAL;
-        }
-        liczba = c - '0';
-
-        if (wynik > 0377 >> 3)
-        { // Sprawdza, czy po przesunięciu byłby overflow
-            return -EINVAL;
-        }
-
-        wynik = (wynik << 3) | liczba; // pipe (operacja OR) daje taki sam rezultat co +, ale podobno jest wydajniejszy
+    if(wynik > 255){
+        return -EINVAL;
     }
 
     dskrwo = wynik;
@@ -71,15 +49,12 @@ static ssize_t dskrwo_store(struct kobject *kobj, struct kobj_attribute *attr, c
 }
 static ssize_t dtkrwo_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count)
 {
-    if (count == 0 || count > 2 || (count == 2 && buf[1] != '\n'))
-    {
+
+    unsigned int wynik = 0;
+    if(kstrtouint(buf, 8, &wynik)){
         return -EINVAL;
     }
-    if (buf[0] < '0' || buf[0] > '3')
-    {
-        return -EINVAL;
-    }
-    dtkrwo = buf[0] - '0';
+    dtkrwo = wynik;
     
     writel(dtkrwo, baseptr + CTRL_ADDR);
     return count;
@@ -87,19 +62,20 @@ static ssize_t dtkrwo_store(struct kobject *kobj, struct kobj_attribute *attr, c
 static ssize_t dckrwo_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
     dckrwo = readl(baseptr+STATE_ADDR);
-    return sprintf(buf, "%x", dckrwo);
+    return sprintf(buf, "%o", dckrwo);
 }
 static ssize_t drkrwo_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
+
     drkrwo = readl(baseptr+RESULT_ADDR);
-    return sprintf(buf, "%x", drkrwo);
+    return sprintf(buf, "%o", drkrwo);
 }
 
-// tylko do zapisu
+
 static struct kobj_attribute dskrwo_attr = __ATTR_WO(dskrwo); // IN
 static struct kobj_attribute dtkrwo_attr = __ATTR_WO(dtkrwo); // CTRL
 
-// tylko do odczytu
+
 static struct kobj_attribute dckrwo_attr = __ATTR_RO(dckrwo); // STATE
 static struct kobj_attribute drkrwo_attr = __ATTR_RO(drkrwo); // RESULT
 
@@ -108,7 +84,7 @@ int my_init_module(void)
     printk(KERN_INFO "Init my module.\n");
     baseptr = ioremap(SYKT_GPIO_BASE_ADDR, SYKT_GPIO_SIZE);
 
-    kobj_ref = kobject_create_and_add("sykt", kernel_kobj);
+    kobj_ref = kobject_create_and_add("sykom", kernel_kobj);
 
     if (!kobj_ref)
     {

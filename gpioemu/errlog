@@ -1,0 +1,19 @@
+Checking enviroment...
+Checking was done.
+Compiling the Verilog file (/home/sykt/Krolak-Kurkus_Wojciech/projekt/gpioemu/gpioemu.v) into CPP by Verilator...
+Compiling the Verilog product in CPP format into BIN...
+Compiling the wraper file for gpioemu extension...
+/usr/local/src/qemu-wraper/gpioemu.cpp: In function ‘void show(int)’:
+/usr/local/src/qemu-wraper/gpioemu.cpp:17:36: error: ‘class Vgpioemu’ has no member named ‘gpioemu__DOT__gpio_in_s’; did you mean ‘gpioemu__DOT__crc_reg’?
+ #define MODULE_ACCESS(t, n)   top->gpioemu__DOT__##n
+                                    ^~~~~~~~~~~~~~
+/usr/local/src/qemu-wraper/gpioemu.cpp:44:47: note: in expansion of macro ‘MODULE_ACCESS’
+   top->saddress, top->gpio_in, top->gpio_out, MODULE_ACCESS(top, gpio_in_s), top->sdata_out);
+                                               ^~~~~~~~~~~~~
+Making libgpioemu library...
+ar: /tmp/local/verilator/1745356425//gpioemu.o: Nie ma takiego pliku ani katalogu
+ranlib: '/home/sykt/Krolak-Kurkus_Wojciech/projekt/gpioemu/libgpioemu.a': No such file
+Libgpioemu is ready in: /home/sykt/Krolak-Kurkus_Wojciech/projekt/gpioemu/libgpioemu.a
+Linking the /var/local/qemu/riscv32-softmmu to final executable file with name qemu-system-riscv32-sykt...
+c++: error: /home/sykt/Krolak-Kurkus_Wojciech/projekt/gpioemu/libgpioemu.a: Nie ma takiego pliku ani katalogu
+The 'qemu-system-riscv32-sykt' is placed at '/home/sykt/Krolak-Kurkus_Wojciech/projekt/gpioemu' location. Bye!

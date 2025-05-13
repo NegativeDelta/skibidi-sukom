@@ -1,0 +1,54 @@
+# sygnały wejściowe:
+0x640 - IN [8b]
+    ośmiobitowa szyna wejścia danych
+
+
+0x658 - CTRL [2b]
+    0 - brak instrukcji
+    1 - PUT
+    2 - GET
+    3 - CLR
+        
+
+#####################################################################
+# rejestry wyjściowe:
+0x648 - STATE [3b]
+    0 - STATE_BUSY - moduł jest zajęty obliczaniem sumy kontrolnej
+    1 - STATE_READ - moduł jest gotowy do przyjęcia danych
+    2 - STATE_FULL - bufor jest pełny
+    3 - STATE_READY - wynik jest gotowy
+    4 - STATE_ERROR - niepoprawne dane wejściowe
+
+0x650 - RESULT [32b]
+        Wyjście z sumą kontrolną. Przechowywana ona jest w pamięci do czasu resetu, CLR albo rozpoczęcia wprowadzania nowych danych (czyli kiedy stan jest STATE_READY)
+
+
+
+#####################################################################
+# instrukcje:
+PUT:
+    jeśli jest w stanie STATE_READ albo STATE_READY:
+        ustawia stan na STATE_BUSY
+        wczytuje do bufora zawartość IN
+        przesuwa wskaźnik odczytu o 8 bitów dalej
+        jeśli wskaźnik osiągnął wartość pojemności bufora:
+            ustawia stan na STATE_FULL
+        else:
+            ustawia stan na STATE_READ
+
+GET:
+    jeśli nie jest STATE_BUSY:
+        oblicza sumę kontrolną i zwraca ją na rejestr RESULT
+        ustawia stan na STATE_READY
+
+CLR:
+    ustawia stan na STATE_BUSY
+    czyści bufor 
+    przesuwa wskaźnik odczytu na 0
+    ustawia stan na STATE_READ
+
+
+
+UWAGA:
+DANE WPROWADZANE SĄ W FORMACIE LITTLE ENDIAN
+OZNACZA TO, ŻE DANE NALEŻY W PRORGAMIE PODAWAĆ OD NAJSTARSZYCH BITÓW DO NAJMŁODSZYCH

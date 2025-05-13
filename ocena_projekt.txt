@@ -1,0 +1,30 @@
+Projekt skala 0...36pkt
+
+Etap I - 2pkt
+-Uporz¹dkowany zestaw "szkieletowych" plikow + ".gitignore" (czy na git trafia to co ma i czy czegos nie brak)
+										2
+Etap II - 4pkt
+-Kompilowalna wersja plików modu³u j¹dra (czy produkuje siê kernel i nowy RootFS)
+										4
+
+Etap IIIa - 8pkt
+-Przygotowanie zgodnie ze specyfikacj¹ modu³u gpioemu.v         (0...4pkt):	3,5
+	-stale w kodzie nie opisane symbolicznie
+	-brak komentarzy wyjasniajacych koncepcje kodu 
+-Przygotowanie testów dla modu³u gpioemu.v         		(0...4pkt):	4
+
+Etap IIIb - 12pkt
+-Utworzenie zgodnego ze specyfikacj¹ modu³u j¹dra               (0...6pkt):	6
+-Testy przygotowanego systemu 
+	-Przygotowanie testów CLI utworzonego systemu 		(0...2pkt):	-
+	lub(!)
+	-Przygotowanie aplikacji testuj¹cej utworzony system    (0...6pkt):	3
+		-jest HEX i OCT a mialo byc w OCT
+		-strtol(), strdup()
+
+
+-Raport - 10pkt
+--Przygotowanie raportu z udokumentowaniem poprawnoœci dzia³ania (0...8pkt):	8
+--Jakoœæ redakcyjna raportu (kompletnoœæ, czytelnoœæ,...)        (0...2pkt):	2
+
++10pkt - podejscie za dodatkowe 10 punktów
